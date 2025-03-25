@@ -69,9 +69,13 @@
         }
 
         .download-btn {
+            top: 20px;
+            right: 20px;
+
+
             position: absolute; /* Posiciona el botón de forma absoluta dentro del contenedor */
-            bottom: 20px; /* Pone el botón en la parte inferior */
-            right: 20px; /* Pone el botón a la derecha */
+            /* bottom: 20px; 
+            right: 20px;  */
             padding: 10px 20px;
             background-color: #2e8b57;
             color: white;
@@ -90,6 +94,9 @@
 
     <div id="loading" class="loading">Cargando...</div>
 
+
+
+
     <div id="ticket" class="ticket" style="display:none;">
         <h1 id="ticket-header" class="ticket-header"></h1>
         <div id="ticket-body" class="ticket-body"></div>
@@ -104,7 +111,7 @@
 
         // Obtener el número original de la URL (ejemplo: ?originalNumber=123456)
         const urlParams = new URLSearchParams(window.location.search);
-        const originalNumber = 21250324155237; // pruebas
+        const originalNumber = urlParams.get('originalNumber');
 
         if (originalNumber) {
             // Mostrar carga
