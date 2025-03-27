@@ -155,7 +155,17 @@
                         </p>
                         <p class="ticket-arqc"><span class="bold-text">Tarjeta:</span> ${ticketResponse.cardMask}</p>
                         <p class="ticket-arqc"><span class="bold-text">Banco:</span> ${ticketResponse.cardIssuerBank}</p>
-                        <p class="ticket-arqc"><span class="bold-text">Detalles:</span> ${ticketResponse.additionalData}</p>
+
+
+                        
+                         <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
+                            <ul>
+                            ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
+                                `<li><strong>${key}:</strong> ${value}</li>`
+                            ).join('')} 
+                                </ul>
+
+
 
                         <p class="ticket-amount">TOTAL: <strong>${ticketResponse.amount.toFixed(2)}</strong></p>
                     `;
