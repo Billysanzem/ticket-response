@@ -94,13 +94,6 @@
 
     <div id="loading" class="loading">Cargando...</div>
 
-
-
-    <div class="total-container">
-        <img src="assets/paymind_logo.png" alt="Logo" class="ticket-logo">
-        <p id="ticket-amount" class="ticket-amount-container"> <strong></strong></p>
-    </div>
-    
     
     <div id="ticket" class="ticket" style="display:none;">
         <h1 id="ticket-header" class="ticket-header"></h1>
@@ -116,7 +109,8 @@
 
         // Obtener el número original de la URL (ejemplo: ?originalNumber=123456)
         const urlParams = new URLSearchParams(window.location.search);
-        const originalNumber = urlParams.get('originalNumber');
+        const originalNumber = "21250327110944";
+        // const originalNumber = urlParams.get('originalNumber');
 
         if (originalNumber) {
             // Mostrar carga
@@ -162,7 +156,7 @@
                         <p class="ticket-arqc"><span class="bold-text">Banco:</span> ${ticketResponse.cardIssuerBank}</p>
 
 
-                        
+                     
                          <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
                         ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
                             `<p class="ticket-arqc"><span class="bold-text">${key}:</span> ${value}</p>`
@@ -171,6 +165,7 @@
 
 
                         <p class="ticket-amount">TOTAL: <strong>${ticketResponse.amount.toFixed(2)}</strong></p>
+                        <img src="assets/paymind.png" alt="Logo" class="ticket-logo" style="width: 100px; height: 50px;">
                     `;
 
                     // Insertar el contenido del ticket
