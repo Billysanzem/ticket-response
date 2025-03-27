@@ -159,11 +159,9 @@
 
                         
                          <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
-                            <ul>
-                            ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
-                                `<li><strong>${key}:</strong> ${value}</li>`
-                            ).join('')} 
-                                </ul>
+                        ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
+                            `<p class="ticket-arqc"><span class="bold-text">${key}:</span> ${value}</p>`
+                            ).join('')}
 
 
 
