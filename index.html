@@ -109,8 +109,8 @@
 
         // Obtener el número original de la URL (ejemplo: ?originalNumber=123456)
         const urlParams = new URLSearchParams(window.location.search);
-        const originalNumber = "21250327110944";
-        // const originalNumber = urlParams.get('originalNumber');
+        // const originalNumber = "21250327110944";
+        const originalNumber = urlParams.get('originalNumber');
 
         if (originalNumber) {
             // Mostrar carga
@@ -157,10 +157,13 @@
 
 
                      
-                         <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
-                        ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
-                            `<p class="ticket-arqc"><span class="bold-text">${key}:</span> ${value}</p>`
-                            ).join('')}
+                        ${ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0 ? `
+                             <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
+                             ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
+                                 `<p class="ticket-arqc"><span class="bold-text">${key}:</span> ${value}</p>`).join('')}` : ''}
+
+
+                       
 
 
 
