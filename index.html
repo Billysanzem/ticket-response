@@ -30,8 +30,8 @@
             background-color: #fff;
             max-width: 500px;
             width: 100%;
-            position: relative; /* Para que el botón se posicione con respecto a este contenedor */
-            min-height: 400px; /* Asegúrate de que el contenedor sea lo suficientemente alto para mostrar el botón en la parte inferior */
+            position: relative;
+            min-height: 400px;
         }
 
         .ticket-header {
@@ -71,11 +71,7 @@
         .download-btn {
             top: 20px;
             right: 20px;
-
-
-            position: absolute; /* Posiciona el botón de forma absoluta dentro del contenedor */
-            /* bottom: 20px; 
-            right: 20px;  */
+            position: absolute;
             padding: 10px 20px;
             background-color: #2e8b57;
             color: white;
@@ -87,50 +83,61 @@
         .download-btn:hover {
             background-color: #3cb371;
         }
-    </style>
 
+        .total-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .ticket-logo {
+            max-width: 50px;
+            height: auto;
+        }
+
+        .ticket-amount-container {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
     <div id="loading" class="loading">Cargando...</div>
 
-
-
-
     <div id="ticket" class="ticket" style="display:none;">
         <h1 id="ticket-header" class="ticket-header"></h1>
         <div id="ticket-body" class="ticket-body"></div>
-        <button id="download-btn" class="download-btn">Descargar </button>
+        
+        <!-- Contenedor para la imagen y el total -->
+        <div class="total-container">
+            <img src="assets/paymind_logo.png" alt="Logo" class="ticket-logo">
+            <p id="ticket-amount" class="ticket-amount-container">TOTAL: <strong></strong></p>
+        </div>
+        
+        <button id="download-btn" class="download-btn">Descargar</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <img src="assets/paymind_logo.png" alt="Logo" style="max-width: 100%; display: block; margin: 0 auto;">
 
     <script>
-        // URL de la API
         const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
-
-        // Obtener el número original de la URL (ejemplo: ?originalNumber=123456)
         const urlParams = new URLSearchParams(window.location.search);
         const originalNumber = urlParams.get('originalNumber');
 
         if (originalNumber) {
-            // Mostrar carga
             document.getElementById('loading').style.display = 'block';
 
-            // Hacer la solicitud a la API
             fetch(apiUrl + originalNumber)
                 .then(response => response.json())
                 .then(data => {
-                    // Ocultar la carga
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('ticket').style.display = 'block';
 
-                    // Rellenar los datos del ticket
                     const ticketResponse = data.data;
 
-                    // Asignar valores a los elementos HTML
                     document.getElementById('ticket-header').textContent = ticketResponse.subMerchantName;
 
                     let ticketBody = `
@@ -157,28 +164,21 @@
                         </p>
                         <p class="ticket-arqc"><span class="bold-text">Tarjeta:</span> ${ticketResponse.cardMask}</p>
                         <p class="ticket-arqc"><span class="bold-text">Banco:</span> ${ticketResponse.cardIssuerBank}</p>
-
-
                         
-                         <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
+                        <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
                         ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
                             `<p class="ticket-arqc"><span class="bold-text">${key}:</span> ${value}</p>`
                             ).join('')}
-
-
-
-                        <p class="ticket-amount">TOTAL: <strong>${ticketResponse.amount.toFixed(2)}</strong></p>
                     `;
 
-                    // Insertar el contenido del ticket
                     document.getElementById('ticket-body').innerHTML = ticketBody;
 
-                    // Función para generar y descargar el PDF
+                    // Mostrar el total
+                    document.getElementById('ticket-amount').querySelector('strong').textContent = ticketResponse.amount.toFixed(2);
+
                     document.getElementById('download-btn').addEventListener('click', function () {
                         const { jsPDF } = window.jspdf;
                         const doc = new jsPDF();
-
-                        // Añadir contenido al PDF
                         doc.text(ticketResponse.subMerchantName, 10, 10);
                         doc.text(ticketResponse.city + ", " + ticketResponse.state, 10, 20);
                         doc.text('Aut: ' + ticketResponse.authCode, 10, 30);
@@ -191,11 +191,8 @@
                         doc.text('Tarjeta: ' + ticketResponse.cardMask, 10, 100);
                         doc.text('Banco: ' + ticketResponse.cardIssuerBank, 10, 110);
                         doc.text('TOTAL: ' + ticketResponse.amount.toFixed(2), 10, 120);
-
-                        // Descargar el PDF
                         doc.save('ticket.pdf');
                     });
-
                 })
                 .catch(error => {
                     console.error('Error al obtener el ticket', error);
@@ -209,4 +206,3 @@
 </body>
 
 </html>
-    
