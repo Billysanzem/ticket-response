@@ -105,15 +105,19 @@
 
         .ticket-logo {
             position: absolute;
-            bottom: 30px;/* Ajusta la distancia desde la parte inferior */
+            bottom: 30px;
+            /* Ajusta la distancia desde la parte inferior */
             left: 50%;
             transform: translateX(-50%);
             width: 160px;
             height: auto;
-            opacity: 0.6;/* Hace que sea semitransparente */
-            z-index: 0;/* La envía al fondo */
-        }t
+            opacity: 0.6;
+            /* Hace que sea semitransparente */
+            z-index: 0;
+            /* La envía al fondo */
+        }
 
+        t
         /* .download-btn {
             position: absolute;
             width: auto;
@@ -160,9 +164,11 @@
 
     <script>
         const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
-            // const originalNumber = "21250324155237";
-        const originalNumber = urlParams.get('originalNumber');
 
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const originalNumber = urlParams.get('originalNumber');
+        // const originalNumber = "21250324155237";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
