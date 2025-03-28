@@ -10,10 +10,13 @@
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            /* Cambiado de center a flex-start */
             height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
+            overflow: auto;
+            /* Agregado para permitir desplazamiento */
         }
 
         .ticket {
@@ -26,6 +29,8 @@
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             position: relative;
+            margin-top: 20px;
+            /* Para que no quede pegado arriba */
         }
 
         .ticket-header {
@@ -162,12 +167,6 @@
 
     <div id="loading" class="loading">Cargando...</div>
 
-    <!-- <div id="ticket" class="ticket" style="display:none;">
-        <h1 id="ticket-header" class="ticket-header"></h1>
-        <div id="ticket-body"></div>
-        <button id="download-btn" class="download-btn">Descargar Ticket</button>
-    </div> -->
-
 
     <div id="ticket" class="ticket" style="display:none;">
         <h1 id="ticket-header" class="ticket-header"></h1>
@@ -183,12 +182,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
+        // const apiUrl = "http://localhost:8080/tickets/search-by-original-number/";
         const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
 
 
         const urlParams = new URLSearchParams(window.location.search);
         const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250324155237";
+        // const originalNumber = "21250328142209";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
