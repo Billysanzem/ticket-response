@@ -23,15 +23,14 @@
         }
 
         .ticket {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            border: 1px solid #ddd;
-            margin-top: 20px;
             background-color: #fff;
+            border: 1px solid #c3c1c1;
+            padding: 20px;
             max-width: 500px;
             width: 100%;
-            position: relative; /* Para que el botón se posicione con respecto a este contenedor */
-            min-height: 400px; /* Asegúrate de que el contenedor sea lo suficientemente alto para mostrar el botón en la parte inferior */
+            min-height: 400px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         .ticket-header {
@@ -40,52 +39,97 @@
             font-weight: bold;
             margin-bottom: 20px;
             color: #333;
+            padding-bottom: 10px;
         }
 
-        .ticket-body p {
+        .ticket-address {
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 10px;
+        }
+
+
+        .ticket-row {
+            display: flex;
+            justify-content: space-between;
             font-size: 16px;
-            margin: 5px 0;
-            text-align: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #e9e3e3;
         }
 
-        .left-align {
+        .ticket-label {
+            font-weight: bold;
+            color: #555;
             text-align: left;
+            flex: 1;
         }
 
-        .ticket-full {
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .bold-text {
-            font-weight: bold;
+        .ticket-value {
+            text-align: right;
+            flex: 1;
+            color: #222;
         }
 
         .ticket-amount {
-            font-size: 1.2em;
-            color: #2e8b57;
+            font-size: 30px;
             font-weight: bold;
+            color: #08673b;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px 0;
+            border-top: 2px solid #ddd;
+        }
+
+        .ticket {
+            position: relative;
         }
 
         .download-btn {
-            top: 20px;
-            right: 20px;
-
-
-            position: absolute; /* Posiciona el botón de forma absoluta dentro del contenedor */
-            /* bottom: 20px; 
-            right: 20px;  */
-            padding: 10px 20px;
-            background-color: #2e8b57;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: auto;
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: #14B8A6;
             color: white;
-            font-size: 16px;
-            cursor: pointer;
             border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+
         }
 
+
+        .ticket-logo {
+            position: absolute;
+            bottom: 30px;/* Ajusta la distancia desde la parte inferior */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: auto;
+            opacity: 0.6;/* Hace que sea semitransparente */
+            z-index: 0;/* La envía al fondo */
+        }t
+
+        /* .download-btn {
+            position: absolute;
+            width: auto;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2e8b57;
+            color: white;
+            font-size: 14px;
+     
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        } */
+
         .download-btn:hover {
-            background-color: #3cb371;
+            background-color: #14B8A6;
         }
     </style>
 </head>
@@ -94,109 +138,91 @@
 
     <div id="loading" class="loading">Cargando...</div>
 
-    
+    <!-- <div id="ticket" class="ticket" style="display:none;">
+        <h1 id="ticket-header" class="ticket-header"></h1>
+        <div id="ticket-body"></div>
+        <button id="download-btn" class="download-btn">Descargar Ticket</button>
+    </div> -->
+
+
     <div id="ticket" class="ticket" style="display:none;">
         <h1 id="ticket-header" class="ticket-header"></h1>
-        <div id="ticket-body" class="ticket-body"></div>
-        <button id="download-btn" class="download-btn">Descargar </button>
+        <div id="ticket-body"></div>
+
+        <!-- Imagen de fondo -->
+        <img src="assets/paymind.png" alt="Logo" class="ticket-logo">
+
+        <button id="download-btn" class="download-btn">Descargar Ticket</button>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
-        // URL de la API
         const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
-
-        // Obtener el número original de la URL (ejemplo: ?originalNumber=123456)
-        const urlParams = new URLSearchParams(window.location.search);
-        // const originalNumber = "21250327110944";
-        const originalNumber = urlParams.get('originalNumber');
+        const originalNumber = "21250324155237";
 
         if (originalNumber) {
-            // Mostrar carga
             document.getElementById('loading').style.display = 'block';
 
-            // Hacer la solicitud a la API
             fetch(apiUrl + originalNumber)
                 .then(response => response.json())
                 .then(data => {
-                    // Ocultar la carga
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('ticket').style.display = 'block';
 
-                    // Rellenar los datos del ticket
                     const ticketResponse = data.data;
-
-                    // Asignar valores a los elementos HTML
                     document.getElementById('ticket-header').textContent = ticketResponse.subMerchantName;
 
                     let ticketBody = `
-                        <hr style="border: 1px solid #ddd; margin: 10px 0;">
-                        <p class="ticket-full">
+
+                    <hr style="border: 1px solid #ddd; margin: 10px 0;">
+                        <div class="ticket-address">
                             ${ticketResponse.city.toUpperCase()}, 
                             ${ticketResponse.state.toUpperCase()}, 
                             ${ticketResponse.street.toUpperCase()}, 
                             ${ticketResponse.neighborhoods.toUpperCase()}
-                        </p>
-                        <hr style="border: 1px solid #ddd; margin: 10px 0;">
-                        <p class="ticket-authCode"><span class="bold-text">Aut:</span> ${ticketResponse.authCode}</p>
-                        <p class="ticket-operation">
-                              ${ticketResponse.msi.toLowerCase() === 'contado' ?
-                            `<span class="bold-text">Operacion:</span> CONTADO` :
-                            `<span class="bold-text">Msi:</span> ${ticketResponse.msi} msi`}
-                        </p>
-                        <p class="ticket-authCode"><span class="bold-text">Ref:</span> ${ticketResponse.originalNumber}</p>
-                        <p class="ticket-authCode"><span class="bold-text">status:</span> ${ticketResponse.responseMessage}</p>
-                        <p class="ticket-aid"><span class="bold-text">AID:</span> ${ticketResponse.aid}</p>
-                        <p class="ticket-arqc"><span class="bold-text">Arqc:</span> ${ticketResponse.arqc}</p>
-                        <p class="ticket-date"><span class="bold-text">Fecha:</span> ${new Date(ticketResponse.date).toLocaleDateString('es-MX')} 
-                            <span class="bold-text"> Hora:</span> ${new Date(ticketResponse.date).toLocaleTimeString('es-MX')}
-                        </p>
-                        <p class="ticket-arqc"><span class="bold-text">Tarjeta:</span> ${ticketResponse.cardMask}</p>
-                        <p class="ticket-arqc"><span class="bold-text">Banco:</span> ${ticketResponse.cardIssuerBank}</p>
+                        </div>
 
 
-                     
+              
+                        <div class="ticket-amount">TOTAL: $${ticketResponse.amount.toFixed(2)}</div>
+                        <div class="ticket-row"><span class="ticket-label">Aut:</span> <span class="ticket-value">${ticketResponse.authCode}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Operación:</span> <span class="ticket-value">${ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : `${ticketResponse.msi} MSI`}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Ref:</span> <span class="ticket-value">${ticketResponse.originalNumber}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Status:</span> <span class="ticket-value">${ticketResponse.responseMessage}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">AID:</span> <span class="ticket-value">${ticketResponse.aid}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Arqc:</span> <span class="ticket-value">${ticketResponse.arqc}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Fecha:</span> <span class="ticket-value">${new Date(ticketResponse.date).toLocaleDateString('es-MX')} ${new Date(ticketResponse.date).toLocaleTimeString('es-MX')}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Tarjeta:</span> <span class="ticket-value">${ticketResponse.cardMask}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Banco:</span> <span class="ticket-value">${ticketResponse.cardIssuerBank}</span></div>
+
                         ${ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0 ? `
-                             <p class="ticket-arqc"><span class="bold-text">Detalles:</span></p>
+                             <div class="ticket-address"><span class="ticket-label">Detalles</span></div>
                              ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
-                                 `<p class="ticket-arqc"><span class="bold-text">${key}:</span> ${value}</p>`).join('')}` : ''}
+                        `<div class="ticket-row"><span class="ticket-label">${key}:</span><span class="ticket-value">${value}</span></div>`).join('')}` : ''}
 
 
-                       
-
-
-
-                        <p class="ticket-amount">TOTAL: <strong>${ticketResponse.amount.toFixed(2)}</strong></p>
-                        <img src="assets/paymind.png" alt="Logo" class="ticket-logo" style="width: 100px; height: 50px;">
                     `;
 
-                    // Insertar el contenido del ticket
                     document.getElementById('ticket-body').innerHTML = ticketBody;
 
-                    // Función para generar y descargar el PDF
                     document.getElementById('download-btn').addEventListener('click', function () {
                         const { jsPDF } = window.jspdf;
                         const doc = new jsPDF();
 
-                        // Añadir contenido al PDF
+                        doc.setFontSize(16);
                         doc.text(ticketResponse.subMerchantName, 10, 10);
-                        doc.text(ticketResponse.city + ", " + ticketResponse.state, 10, 20);
-                        doc.text('Aut: ' + ticketResponse.authCode, 10, 30);
-                        doc.text('Msi: ' + (ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : ticketResponse.msi + ' msi'), 10, 40);
-                        doc.text('Ref: ' + ticketResponse.originalNumber, 10, 50);
-                        doc.text('Status: ' + ticketResponse.responseMessage, 10, 60);
-                        doc.text('AID: ' + ticketResponse.aid, 10, 70);
-                        doc.text('Arqc: ' + ticketResponse.arqc, 10, 80);
-                        doc.text('Fecha: ' + new Date(ticketResponse.date).toLocaleDateString('es-MX') + ' Hora: ' + new Date(ticketResponse.date).toLocaleTimeString('es-MX'), 10, 90);
-                        doc.text('Tarjeta: ' + ticketResponse.cardMask, 10, 100);
-                        doc.text('Banco: ' + ticketResponse.cardIssuerBank, 10, 110);
-                        doc.text('TOTAL: ' + ticketResponse.amount.toFixed(2), 10, 120);
-
-                        // Descargar el PDF
+                        doc.setFontSize(12);
+                        doc.text('Ciudad: ' + ticketResponse.city, 10, 20);
+                        doc.text('Estado: ' + ticketResponse.state, 10, 30);
+                        doc.text('Aut: ' + ticketResponse.authCode, 10, 40);
+                        doc.text('Operación: ' + (ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : `${ticketResponse.msi} MSI`), 10, 50);
+                        doc.text('Ref: ' + ticketResponse.originalNumber, 10, 60);
+                        doc.text('Status: ' + ticketResponse.responseMessage, 10, 70);
+                        doc.text('TOTAL: $' + ticketResponse.amount.toFixed(2), 10, 80);
                         doc.save('ticket.pdf');
                     });
-
                 })
                 .catch(error => {
                     console.error('Error al obtener el ticket', error);
@@ -210,4 +236,3 @@
 </body>
 
 </html>
-    
