@@ -10,13 +10,10 @@
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            /* Cambiado de center a flex-start */
+            align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
-            overflow: auto;
-            /* Agregado para permitir desplazamiento */
         }
 
         .ticket {
@@ -29,8 +26,6 @@
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             position: relative;
-            margin-top: 20px;
-            /* Para que no quede pegado arriba */
         }
 
         .ticket-header {
@@ -167,6 +162,12 @@
 
     <div id="loading" class="loading">Cargando...</div>
 
+    <!-- <div id="ticket" class="ticket" style="display:none;">
+        <h1 id="ticket-header" class="ticket-header"></h1>
+        <div id="ticket-body"></div>
+        <button id="download-btn" class="download-btn">Descargar Ticket</button>
+    </div> -->
+
 
     <div id="ticket" class="ticket" style="display:none;">
         <h1 id="ticket-header" class="ticket-header"></h1>
@@ -188,7 +189,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250328142209";
+        // const originalNumber = "21250328172445";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -225,11 +226,18 @@
                         <div class="ticket-row"><span class="ticket-label">Tarjeta:</span> <span class="ticket-value">${ticketResponse.cardMask}</span></div>
                         <div class="ticket-row"><span class="ticket-label">Banco:</span> <span class="ticket-value">${ticketResponse.cardIssuerBank}</span></div>
 
-                        ${ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0 ? `
-                             <div class="ticket-address"><span class="ticket-label">Detalles</span></div>
-                             ${Object.entries(ticketResponse.additionalData).map(([key, value]) =>
-                        `<div class="ticket-row"><span class="ticket-label">${key}:</span><span class="ticket-value">${value}</span></div>`).join('')}` : ''}
-
+                        ${ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0 ?
+                            `<div class="ticket-address"><span class="ticket-label">Detalles</span></div>${Object.entries(ticketResponse.additionalData)
+                                .filter(([key, value]) => key.endsWith('_imprimir') && value === true).map(([key]) => {
+                                    const mainKey = key.replace('_imprimir', '');
+                                    const displayKey = mainKey.replace('_', ' ');
+                                    const value = ticketResponse.additionalData[mainKey];
+                                    const formattedValue = (mainKey.includes('precio') || mainKey.includes('monto') || mainKey.includes('importe'))
+                                        ? `$${value}`
+                                        : value;
+                                    return `<div class="ticket-row"><span class="ticket-label">${displayKey}:</span><span class="ticket-value">${formattedValue}</span></div>`;
+                                })
+                                .join('')}` : ''}
 
                     `;
 
