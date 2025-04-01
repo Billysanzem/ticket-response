@@ -189,14 +189,14 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250328173509";
+        // const originalNumber = "21250401170948";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
 
             fetch(apiUrl + originalNumber)
                 .then(response => response.json())
-                .then(data => {n
+                .then(data => {
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('ticket').style.display = 'block';
 
@@ -207,9 +207,13 @@
 
                     <hr style="border: 1px solid #ddd; margin: 10px 0;">
                         <div class="ticket-address">
-                            ${ticketResponse.street.toUpperCase()},
+                            ${ticketResponse.street.toUpperCase()}, 
                             ${ticketResponse.city.toUpperCase()}, 
                             ${ticketResponse.state.toUpperCase()}, 
+                            ${ticketResponse.zipCode}, 
+                          
+                          
+                   \
                         </div>
 
 
