@@ -196,7 +196,7 @@
 
             fetch(apiUrl + originalNumber)
                 .then(response => response.json())
-                .then(data => {
+                .then(data => {n
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('ticket').style.display = 'block';
 
@@ -207,10 +207,9 @@
 
                     <hr style="border: 1px solid #ddd; margin: 10px 0;">
                         <div class="ticket-address">
+                            ${ticketResponse.street.toUpperCase()},
                             ${ticketResponse.city.toUpperCase()}, 
                             ${ticketResponse.state.toUpperCase()}, 
-                            ${ticketResponse.street.toUpperCase()}, 
-                            ${ticketResponse.neighborhoods.toUpperCase()}
                         </div>
 
 
