@@ -184,12 +184,12 @@
 
     <script>
         // const apiUrl = "http://localhost:8080/tickets/search-by-original-number/";
-        const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
+        const apiUrl = "https://dev.paymind.mx/transactions-management/tickets/search-by-original-number/";
 
 
         const urlParams = new URLSearchParams(window.location.search);
-        const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250328172445";
+        // const originalNumber = urlParams.get('originalNumber');
+        const originalNumber = "21250328173509";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -243,22 +243,67 @@
 
                     document.getElementById('ticket-body').innerHTML = ticketBody;
 
+                    // document.getElementById('download-btn').addEventListener('click', function () {
+                    //     const { jsPDF } = window.jspdf;
+                    //     const doc = new jsPDF();
+
+                    //     doc.setFontSize(16);
+                    //     doc.text(ticketResponse.subMerchantName, 10, 10);
+                    //     doc.setFontSize(12);
+                    //     doc.text('Ciudad: ' + ticketResponse.city, 10, 20);
+                    //     doc.text('Estado: ' + ticketResponse.state, 10, 30);
+                    //     doc.text('Aut: ' + ticketResponse.authCode, 10, 40);
+                    //     doc.text('Operación: ' + (ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : `${ticketResponse.msi} MSI`), 10, 50);
+                    //     doc.text('Ref: ' + ticketResponse.originalNumber, 10, 60);
+                    //     doc.text('Status: ' + ticketResponse.responseMessage, 10, 70);
+                    //     doc.text('TOTAL: $' + ticketResponse.amount.toFixed(2), 10, 80);
+                    //     doc.save('ticket.pdf');
+                    // });
+
+
+
                     document.getElementById('download-btn').addEventListener('click', function () {
                         const { jsPDF } = window.jspdf;
                         const doc = new jsPDF();
+                        let y = 10;
 
                         doc.setFontSize(16);
-                        doc.text(ticketResponse.subMerchantName, 10, 10);
+                        doc.text(ticketResponse.subMerchantName, 10, y);
+                        y += 10;
+
                         doc.setFontSize(12);
-                        doc.text('Ciudad: ' + ticketResponse.city, 10, 20);
-                        doc.text('Estado: ' + ticketResponse.state, 10, 30);
-                        doc.text('Aut: ' + ticketResponse.authCode, 10, 40);
-                        doc.text('Operación: ' + (ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : `${ticketResponse.msi} MSI`), 10, 50);
-                        doc.text('Ref: ' + ticketResponse.originalNumber, 10, 60);
-                        doc.text('Status: ' + ticketResponse.responseMessage, 10, 70);
-                        doc.text('TOTAL: $' + ticketResponse.amount.toFixed(2), 10, 80);
+                        doc.text('Ciudad: ' + ticketResponse.city, 10, y); y += 10;
+                        doc.text('Estado: ' + ticketResponse.state, 10, y); y += 10;
+                        doc.text('Aut: ' + ticketResponse.authCode, 10, y); y += 10;
+                        doc.text('Operación: ' + (ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : `${ticketResponse.msi} MSI`), 10, y); y += 10;
+                        doc.text('Ref: ' + ticketResponse.originalNumber, 10, y); y += 10;
+                        doc.text('Status: ' + ticketResponse.responseMessage, 10, y); y += 10;
+                        doc.text('TOTAL: $' + ticketResponse.amount.toFixed(2), 10, y); y += 10;
+
+                        if (ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0) {
+                            doc.setFontSize(14);
+                            doc.text('Detalles:', 10, y);
+                            y += 10;
+                            doc.setFontSize(12);
+
+                            Object.entries(ticketResponse.additionalData)
+                                .filter(([key, value]) => key.endsWith('_imprimir') && value === true)
+                                .forEach(([key]) => {
+                                    const mainKey = key.replace('_imprimir', '');
+                                    const displayKey = mainKey.replace('_', ' ');
+                                    const value = ticketResponse.additionalData[mainKey];
+                                    const formattedValue = (mainKey.includes('precio') || mainKey.includes('monto') || mainKey.includes('importe'))
+                                        ? `$${value}`
+                                        : value;
+                                    doc.text(`${displayKey}: ${formattedValue}`, 10, y);
+                                    y += 10;
+                                });
+                        }
+
                         doc.save('ticket.pdf');
                     });
+
+
                 })
                 .catch(error => {
                     console.error('Error al obtener el ticket', error);
