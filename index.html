@@ -231,12 +231,12 @@
 
         // const apiUrl = "http://localhost:8080/tickets/search-by-original-number/";
         
-        const apiUrl = "https://dev.paymind.mx/transactions-management/tickets/search-by-original-number/";
+        const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
 
 
         const urlParams = new URLSearchParams(window.location.search);
-            // const originalNumber = urlParams.get('originalNumber');
-        const originalNumber = "21250402125504";
+            const originalNumber = urlParams.get('originalNumber');
+        // const originalNumber = "21250402125504";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
