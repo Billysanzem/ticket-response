@@ -76,8 +76,26 @@
             padding: 10px 0;
             border-top: 2px solid #ddd;
         }
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Un botón a la izquierda y otro a la derecha */
+            margin-top: 15px;
+        }
 
-        .download-btn {
+
+        .button {
+            flex: 1;
+            margin: 0 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        /* .download-btn {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -89,6 +107,22 @@
             border: none;
             border-radius: 5px;
             transition: 0.3s;
+        } */
+
+        .factura-btn {
+            background-color: #070d80; /* Rojo Naranja */
+        }
+
+        .factura-btn:hover {
+            background-color: #3256d9;
+        }
+
+        .download-btn {
+            background-color: #015214; /* Azul */
+        }
+
+        .download-btn:hover {
+            background-color: #139239;
         }
 
         .ticket-logo {
@@ -154,6 +188,9 @@
             .download-btn {
                 font-size: 10px;
             }
+            .factura-btn {
+                font-size: 10px; 
+        }
         }
     </style>
 </head>
@@ -162,34 +199,44 @@
 
     <div id="loading" class="loading">Cargando...</div>
 
-    <!-- <div id="ticket" class="ticket" style="display:none;">
-        <h1 id="ticket-header" class="ticket-header"></h1>
-        <div id="ticket-body"></div>
-        <button id="download-btn" class="download-btn">Descargar Ticket</button>
-    </div> -->
-
+ 
 
     <div id="ticket" class="ticket" style="display:none;">
+        <!-- Contenedor de botones en la parte superior -->
+        <div class="button-container">
+            <button id="factura-btn" class="button factura-btn">Factura aquí...</button>
+            <button id="download-btn" class="button download-btn">Descargar Ticket</button>
+        </div>
+
         <h1 id="ticket-header" class="ticket-header"></h1>
         <div id="ticket-body"></div>
 
         <!-- Imagen de fondo -->
         <img src="assets/paymind.png" alt="Logo" class="ticket-logo">
-
-        <button id="download-btn" class="download-btn">Descargar Ticket</button>
     </div>
+
+        <!-- <button id="download-btn" class="download-btn">Descargar Ticket</button> -->
+      
+    </div>
+    <script>
+        document.getElementById("factura-btn").addEventListener("click", function() {
+            window.location.href = "https://mifactura.orsan.com.mx/#/login-form"; 
+        });
+    </script>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
+
         // const apiUrl = "http://localhost:8080/tickets/search-by-original-number/";
-        const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
+        
+        const apiUrl = "https://dev.paymind.mx/transactions-management/tickets/search-by-original-number/";
 
 
         const urlParams = new URLSearchParams(window.location.search);
-        const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250401170948";
+            // const originalNumber = urlParams.get('originalNumber');
+        const originalNumber = "21250402125504";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
