@@ -76,9 +76,11 @@
             padding: 10px 0;
             border-top: 2px solid #ddd;
         }
+
         .button-container {
             display: flex;
-            justify-content: space-between; /* Un botón a la izquierda y otro a la derecha */
+            justify-content: space-between;
+            /* Un botón a la izquierda y otro a la derecha */
             margin-top: 15px;
         }
 
@@ -110,7 +112,8 @@
         } */
 
         .factura-btn {
-            background-color: #070d80; /* Rojo Naranja */
+            background-color: #070d80;
+            /* Rojo Naranja */
         }
 
         .factura-btn:hover {
@@ -118,7 +121,8 @@
         }
 
         .download-btn {
-            background-color: #015214; /* Azul */
+            background-color: #015214;
+            /* Azul */
         }
 
         .download-btn:hover {
@@ -188,18 +192,23 @@
             .download-btn {
                 font-size: 10px;
             }
+
             .factura-btn {
-                font-size: 10px; 
-        }
+                font-size: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div id="loading" class="loading">Cargando...</div>
+    <div id="loading" class="loading">Cargando...
 
- 
+
+
+    </div>
+
+
 
     <div id="ticket" class="ticket" style="display:none;">
         <!-- Contenedor de botones en la parte superior -->
@@ -215,28 +224,29 @@
         <img src="assets/paymind.png" alt="Logo" class="ticket-logo">
     </div>
 
-        <!-- <button id="download-btn" class="download-btn">Descargar Ticket</button> -->
-      
+
     </div>
+
+
     <script>
-        document.getElementById("factura-btn").addEventListener("click", function() {
-            window.location.href = "https://mifactura.orsan.com.mx/#/login-form"; 
+        document.getElementById("factura-btn").addEventListener("click", function () {
+            window.location.href = "https://mifactura.orsan.com.mx/#/login-form";
         });
     </script>
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
 
         // const apiUrl = "http://localhost:8080/tickets/search-by-original-number/";
-        
+
         const apiUrl = "https://api.paymind.mx/transactions-management/tickets/search-by-original-number/";
 
 
         const urlParams = new URLSearchParams(window.location.search);
-            const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250402125504";
+        const originalNumber = urlParams.get('originalNumber');
+        // const originalNumber = "21250403230526";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -274,8 +284,20 @@
                         <div class="ticket-row"><span class="ticket-label">Arqc:</span> <span class="ticket-value">${ticketResponse.arqc}</span></div>
                         <div class="ticket-row"><span class="ticket-label">Fecha:</span> <span class="ticket-value">${new Date(ticketResponse.date).toLocaleDateString('es-MX')} ${new Date(ticketResponse.date).toLocaleTimeString('es-MX')}</span></div>
                         <div class="ticket-row"><span class="ticket-label">Tarjeta:</span> <span class="ticket-value">${ticketResponse.cardMask}</span></div>
+
+
+
+
+                        <div class="ticket-row"><span class="ticket-label">Marca:</span>
+                             <span class="ticket-value">
+                                <img src="assets/${ticketResponse.cardIssuerBrand.toLowerCase()}.png" alt="${ticketResponse.cardIssuerBrand}" width="40" height="25" />
+                                 </span>
+                                 </div>
+
+                        
                         <div class="ticket-row"><span class="ticket-label">Banco:</span> <span class="ticket-value">${ticketResponse.cardIssuerBank}</span></div>
 
+                        
                         ${ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0 ?
                             `<div class="ticket-address"><span class="ticket-label">Detalles</span></div>${Object.entries(ticketResponse.additionalData)
                                 .filter(([key, value]) => key.endsWith('_imprimir') && value === true).map(([key]) => {
@@ -293,25 +315,14 @@
 
                     document.getElementById('ticket-body').innerHTML = ticketBody;
 
-                    // document.getElementById('download-btn').addEventListener('click', function () {
-                    //     const { jsPDF } = window.jspdf;
-                    //     const doc = new jsPDF();
-
-                    //     doc.setFontSize(16);
-                    //     doc.text(ticketResponse.subMerchantName, 10, 10);
-                    //     doc.setFontSize(12);
-                    //     doc.text('Ciudad: ' + ticketResponse.city, 10, 20);
-                    //     doc.text('Estado: ' + ticketResponse.state, 10, 30);
-                    //     doc.text('Aut: ' + ticketResponse.authCode, 10, 40);
-                    //     doc.text('Operación: ' + (ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : `${ticketResponse.msi} MSI`), 10, 50);
-                    //     doc.text('Ref: ' + ticketResponse.originalNumber, 10, 60);
-                    //     doc.text('Status: ' + ticketResponse.responseMessage, 10, 70);
-                    //     doc.text('TOTAL: $' + ticketResponse.amount.toFixed(2), 10, 80);
-                    //     doc.save('ticket.pdf');
-                    // });
 
 
 
+
+
+
+
+                    //Scrip para descargar ticket
                     document.getElementById('download-btn').addEventListener('click', function () {
                         const { jsPDF } = window.jspdf;
                         const doc = new jsPDF();
