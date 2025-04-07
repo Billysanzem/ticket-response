@@ -249,7 +249,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250407123223";
+        // const originalNumber = "21250407132109";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -283,7 +283,7 @@
 
 
                         
-                        <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation == 'VOID' ? 'CANCELACION'  : (ticketResponse.operation == 'CHECK-IN' ? 'PRE AUTORIZACION' : (ticketResponse.operation == 'CHECK-OUT ' ? 'POS AUTORIZACION' : ticketResponse.operation))}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation == 'VOID' ? 'CANCELACION'  : (ticketResponse.operation == 'CHECK-IN' ? 'PRE AUTORIZACION' : (ticketResponse.operation == 'CHECK-OUT' ? 'POS AUTORIZACION' : ticketResponse.operation))}</span></div>
 
 
 
