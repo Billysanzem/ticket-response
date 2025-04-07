@@ -245,8 +245,8 @@
 
 
         const urlParams = new URLSearchParams(window.location.search);
-        const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250405084531";
+        // const originalNumber = urlParams.get('originalNumber');
+        const originalNumber = "21250407123223";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -277,7 +277,9 @@
               
                         <div class="ticket-amount">TOTAL: $${ticketResponse.amount.toFixed(2)}</div>
                         <div class="ticket-row"><span class="ticket-label">Aut:</span> <span class="ticket-value">${ticketResponse.authCode}</span></div>
-                        <div class="ticket-row"><span class="ticket-label">Operación:</span> <span class="ticket-value">${ticketResponse.status}</span></div>
+
+                        <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation === 'VOID' ? 'cancelacion' : ticketResponse.operation}</span></div>
+
                         <div class="ticket-row"><span class="ticket-label">Ref:</span> <span class="ticket-value">${ticketResponse.originalNumber}</span></div>
                         <div class="ticket-row"><span class="ticket-label">Status:</span> <span class="ticket-value">${ticketResponse.responseMessage}</span></div>
                         <div class="ticket-row"><span class="ticket-label">AID:</span> <span class="ticket-value">${ticketResponse.aid}</span></div>
