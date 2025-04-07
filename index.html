@@ -238,6 +238,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
+        
+
+        
 
         // const apiUrl = "http://localhost:8080/tickets/search-by-original-number/";
 
@@ -278,7 +281,11 @@
                         <div class="ticket-amount">TOTAL: $${ticketResponse.amount.toFixed(2)}</div>
                         <div class="ticket-row"><span class="ticket-label">Aut:</span> <span class="ticket-value">${ticketResponse.authCode}</span></div>
 
-                        <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation === 'VOID' ? 'cancelacion' : ticketResponse.operation}</span></div>
+
+                        
+                        <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation == 'VOID' ? 'CANCELACION'  : (ticketResponse.operation == 'CHECK-IN' ? 'PRE AUTORIZACION' : (ticketResponse.operation == 'CHECK-OUT ' ? 'POS AUTORIZACION' : ticketResponse.operation))}</span></div>
+
+
 
                         <div class="ticket-row"><span class="ticket-label">Ref:</span> <span class="ticket-value">${ticketResponse.originalNumber}</span></div>
                         <div class="ticket-row"><span class="ticket-label">Status:</span> <span class="ticket-value">${ticketResponse.responseMessage}</span></div>
