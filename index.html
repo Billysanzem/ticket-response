@@ -205,15 +205,14 @@
     <div id="loading" class="loading">Cargando...
 
 
-
     </div>
 
 
 
     <div id="ticket" class="ticket" style="display:none;">
         <!-- Contenedor de botones en la parte superior -->
-        <div class="button-container">
-            <button id="factura-btn" class="button factura-btn">Factura aquí...</button>
+
+        <div id="button-container" class="button-container">
             <button id="download-btn" class="button download-btn">Descargar Ticket</button>
         </div>
 
@@ -224,23 +223,12 @@
         <img src="assets/paymind.png" alt="Logo" class="ticket-logo">
     </div>
 
-
     </div>
 
 
-    <script>
-        document.getElementById("factura-btn").addEventListener("click", function () {
-            window.location.href = "https://mifactura.orsan.com.mx/#/login-form";
-        });
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
 
     <script>
-        
-
-        
 
         // const apiUrl = "http://localhost:8080/tickets/search-by-original-number/";
 
@@ -248,8 +236,8 @@
 
 
         const urlParams = new URLSearchParams(window.location.search);
-        const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250407132109";
+        // const originalNumber = urlParams.get('originalNumber');
+        // const originalNumber = "21250421110832";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -271,19 +259,22 @@
                             ${ticketResponse.city.toUpperCase()}, 
                             ${ticketResponse.state.toUpperCase()}, 
                             ${ticketResponse.zipCode}, 
+
                           
-                          
+
                    \
                         </div>
 
 
               
                         <div class="ticket-amount">TOTAL: $${ticketResponse.amount.toFixed(2)}</div>
+                        <div class="ticket-row"><span class="ticket-label">Afilacion:</span> <span class="ticket-value">9607962</span></div>
+
                         <div class="ticket-row"><span class="ticket-label">Aut:</span> <span class="ticket-value">${ticketResponse.authCode}</span></div>
 
 
                         
-                        <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation == 'VOID' ? 'CANCELACION'  : (ticketResponse.operation == 'CHECK-IN' ? 'PRE AUTORIZACION' : (ticketResponse.operation == 'CHECK-OUT' ? 'POS AUTORIZACION' : ticketResponse.operation))}</span></div>
+                        <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation == 'VOID' ? 'CANCELACION' : (ticketResponse.operation == 'CHECK-IN' ? 'PRE AUTORIZACION' : (ticketResponse.operation == 'CHECK-OUT' ? 'POS AUTORIZACION' : ticketResponse.operation))}</span></div>
 
 
 
@@ -300,6 +291,9 @@
                 
                         <div class="ticket-row"><span class="ticket-label">Banco:</span> <span class="ticket-value">${ticketResponse.cardIssuerBank}</span></div>
 
+                   
+                        <h3 class="ticket-address">Autorizado con firma electrónica</h3>
+
                         
                         ${ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0 ?
                             `<div class="ticket-address"><span class="ticket-label">Detalles</span></div>${Object.entries(ticketResponse.additionalData)
@@ -315,60 +309,38 @@
                                 .join('')}` : ''}
 
                     `;
+                    
 
                     document.getElementById('ticket-body').innerHTML = ticketBody;
 
 
 
 
+                    const buttonContainer = document.getElementById('button-container');
 
-
-
+                    if (ticketResponse.billingUr && ticketResponse.billingUr.trim() !== '') {
+                        const facturaBtn = document.createElement('button');
+                        facturaBtn.textContent = 'Factura aquí...';
+                        facturaBtn.className = 'button factura-btn';
+                        facturaBtn.addEventListener('click', () => {
+                            window.open(ticketResponse.billingUr);
+                        });
+                        buttonContainer.insertBefore(facturaBtn, buttonContainer.firstChild);
+                    }
 
                     //Scrip para descargar ticket
-                    document.getElementById('download-btn').addEventListener('click', function () {
-                        const { jsPDF } = window.jspdf;
-                        const doc = new jsPDF();
-                        let y = 10;
-
-                        doc.setFontSize(16);
-                        doc.text(ticketResponse.subMerchantName, 10, y);
-                        y += 10;
-
-                        doc.setFontSize(12);
-                        doc.text('Ciudad: ' + ticketResponse.city, 10, y); y += 10;
-                        doc.text('Estado: ' + ticketResponse.state, 10, y); y += 10;
-                        doc.text('Aut: ' + ticketResponse.authCode, 10, y); y += 10;
-                        doc.text('Operación: ' + (ticketResponse.msi.toLowerCase() === 'contado' ? 'CONTADO' : `${ticketResponse.msi} MSI`), 10, y); y += 10;
-                        doc.text('Ref: ' + ticketResponse.originalNumber, 10, y); y += 10;
-                        doc.text('Status: ' + ticketResponse.responseMessage, 10, y); y += 10;
-                        doc.text('TOTAL: $' + ticketResponse.amount.toFixed(2), 10, y); y += 10;
-
-                        if (ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0) {
-                            doc.setFontSize(14);
-                            doc.text('Detalles:', 10, y);
-                            y += 10;
-                            doc.setFontSize(12);
-
-                            Object.entries(ticketResponse.additionalData)
-                                .filter(([key, value]) => key.endsWith('_imprimir') && value === true)
-                                .forEach(([key]) => {
-                                    const mainKey = key.replace('_imprimir', '');
-                                    const displayKey = mainKey.replace('_', ' ');
-                                    const value = ticketResponse.additionalData[mainKey];
-                                    const formattedValue = (mainKey.includes('precio') || mainKey.includes('monto') || mainKey.includes('importe'))
-                                        ? `$${value}`
-                                        : value;
-                                    doc.text(`${displayKey}: ${formattedValue}`, 10, y);
-                                    y += 10;
-                                });
-                        }
-
-                        doc.save('ticket.pdf');
+                    document.getElementById('download-btn').addEventListener('click', () => {
+                        const ticket = document.getElementById('ticket');
+                        html2pdf().set({
+                            margin: 0.5,
+                            filename: `ticket_${ticketResponse.originalNumber}.pdf`,
+                            image: { type: 'jpeg', quality: 0.98 },
+                            html2canvas: { scale: 2 },
+                            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                        }).from(ticket).save();
                     });
-
-
                 })
+                
                 .catch(error => {
                     console.error('Error al obtener el ticket', error);
                     document.getElementById('loading').textContent = 'Error al cargar el ticket';
