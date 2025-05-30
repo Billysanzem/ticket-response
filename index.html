@@ -17,6 +17,8 @@
         }
 
         .ticket {
+            max-height: 90vh; /* máximo 90% de la altura de la ventana */
+            overflow-y: auto;
             background-color: #fff;
             border: 1px solid #c3c1c1;
             padding: 20px;
@@ -223,7 +225,7 @@
         <img src="assets/paymind.png" alt="Logo" class="ticket-logo">
     </div>
 
-    </div>
+    
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
@@ -237,7 +239,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250530113009";
+        // const originalNumber = "43250530162022";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -275,7 +277,6 @@
 
                         
                         <div class="ticket-row"><span class="ticket-label">Operación:</span><span class="ticket-value">${ticketResponse.operation == 'VOID' ? 'CANCELACION' : (ticketResponse.operation == 'CHECK-IN' ? 'PRE AUTORIZACION' : (ticketResponse.operation == 'CHECK-OUT' ? 'POS AUTORIZACION' : ticketResponse.operation))}</span></div>
-
 
 
                         <div class="ticket-row"><span class="ticket-label">Ref:</span> <span class="ticket-value">${ticketResponse.originalNumber}</span></div>
@@ -321,6 +322,7 @@
 
                     const buttonContainer = document.getElementById('button-container');
 
+                    
                     if (ticketResponse.billingUr && ticketResponse.billingUr.trim() !== '') {
                         const facturaBtn = document.createElement('button');
                         facturaBtn.textContent = 'Factura aquí...';
@@ -328,6 +330,7 @@
                         facturaBtn.addEventListener('click', () => {
                             window.open(ticketResponse.billingUr);
                         });
+                        
                         buttonContainer.insertBefore(facturaBtn, buttonContainer.firstChild);
                     }
 
