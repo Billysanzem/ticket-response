@@ -237,7 +237,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const originalNumber = urlParams.get('originalNumber');
-        // const originalNumber = "21250421110832";
+        // const originalNumber = "21250530113009";
 
         if (originalNumber) {
             document.getElementById('loading').style.display = 'block';
@@ -292,7 +292,10 @@
                         <div class="ticket-row"><span class="ticket-label">Banco:</span> <span class="ticket-value">${ticketResponse.cardIssuerBank}</span></div>
 
                    
-                        <h3 class="ticket-address">Autorizado con firma electrónica</h3>
+                        <h3 class="ticket-address">OPERACION ${ticketResponse.entryMode}</h3>
+                        <h3 class="ticket-address">${ ticketResponse.entryMode === 'CHIP'
+                            ? 'Autorizado con firma electrónica': ticketResponse.entryMode === 'CONTACTLESS'
+                            ? 'Autorizado sin firma' : 'Autorizado con firma electrónica'}</h3>
 
                         
                         ${ticketResponse.additionalData && Object.keys(ticketResponse.additionalData).length > 0 ?
