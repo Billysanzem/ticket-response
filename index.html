@@ -337,13 +337,29 @@
                     //Scrip para descargar ticket
                     document.getElementById('download-btn').addEventListener('click', () => {
                         const ticket = document.getElementById('ticket');
+                        const buttonContainer = document.getElementById('button-container');
+
+                        // Guardar estilos originales
+                        const originalMaxHeight = ticket.style.maxHeight;
+                        const originalOverflowY = ticket.style.overflowY;
+                        
+                        // Remover restricciones de altura/scroll y ocultar botones para que no salgan en el PDF
+                        ticket.style.maxHeight = 'none';
+                        ticket.style.overflowY = 'visible';
+                        buttonContainer.style.display = 'none';
+
                         html2pdf().set({
                             margin: 0.5,
                             filename: `ticket_${ticketResponse.originalNumber}.pdf`,
                             image: { type: 'jpeg', quality: 0.98 },
-                            html2canvas: { scale: 2 },
+                            html2canvas: { scale: 2, scrollY: 0 },
                             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                        }).from(ticket).save();
+                        }).from(ticket).save().then(() => {
+                            // Restaurar estilos y botones
+                            ticket.style.maxHeight = originalMaxHeight;
+                            ticket.style.overflowY = originalOverflowY;
+                            buttonContainer.style.display = '';
+                        });
                     });
                 })
                 
